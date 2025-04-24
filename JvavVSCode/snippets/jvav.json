@@ -1,0 +1,188 @@
+{
+  "Jvav Print": {
+    "prefix": ["print", "输出"],
+    "body": ["print(\"$1\");"],
+    "description": "输出语句"
+  },
+  "Jvav Set Variable": {
+    "prefix": ["set", "设置"],
+    "body": ["set ${1:变量名} == ${2:值}"],
+    "description": "变量声明"
+  },
+  "Jvav Define Function": {
+    "prefix": ["define", "定义"],
+    "body": [
+      "define ${1:函数名}(${2:参数}) {",
+      "    $0",
+      "    return ${3:返回值};",
+      "}"
+    ],
+    "description": "函数定义"
+  },
+  "Jvav If Statement": {
+    "prefix": ["if", "如果"],
+    "body": [
+      "if ${1:条件} {",
+      "    $0",
+      "}"
+    ],
+    "description": "条件语句"
+  },
+  "Jvav If-Else Statement": {
+    "prefix": ["ifelse", "如果否则"],
+    "body": [
+      "if ${1:条件} {",
+      "    $2",
+      "} else {",
+      "    $0",
+      "}"
+    ],
+    "description": "条件-否则语句"
+  },
+  "Jvav Loop Statement": {
+    "prefix": ["loop", "循环"],
+    "body": [
+      "loop as ${1:i}(${2:次数}) {",
+      "    $0",
+      "}"
+    ],
+    "description": "循环语句"
+  },
+  "Jvav Try-Catch": {
+    "prefix": ["try", "尝试"],
+    "body": [
+      "try {",
+      "    $1",
+      "} catch {",
+      "    $0",
+      "}"
+    ],
+    "description": "try-catch异常处理"
+  },
+  "Jvav Import": {
+    "prefix": ["import", "导入"],
+    "body": ["import \"${1:模块路径}\";"],
+    "description": "导入模块"
+  },
+  "Jvav Enum": {
+    "prefix": ["enum", "枚举"],
+    "body": [
+      "enum ${1:枚举名} {",
+      "    ${2:值1}",
+      "    ${3:值2}",
+      "    ${4:值3}",
+      "}"
+    ],
+    "description": "枚举定义"
+  },
+  "Jvav Main Program": {
+    "prefix": ["main", "主程序"],
+    "body": [
+      "# Jvav程序 - ${1:程序名称}",
+      "# 作者: ${2:作者名}",
+      "",
+      "# 主程序代码",
+      "set ${3:变量} == \"${4:值}\";",
+      "print(${3:变量});",
+      "",
+      "$0"
+    ],
+    "description": "Jvav程序模板"
+  },
+  "Jvav Chinese Function": {
+    "prefix": ["函数"],
+    "body": [
+      "定义 ${1:函数名}(${2:参数}) {",
+      "    $0",
+      "    返回 ${3:返回值};",
+      "}"
+    ],
+    "description": "中文函数定义"
+  },
+  "Main Function": {
+    "prefix": "main",
+    "body": [
+      "public func main() {",
+      "    $1",
+      "}"
+    ],
+    "description": "Main function"
+  },
+  "Print to console": {
+    "prefix": "print",
+    "body": [
+      "print($1);"
+    ],
+    "description": "Print to console"
+  },
+  "Function declaration": {
+    "prefix": "func",
+    "body": [
+      "func ${1:name}(${2:params}) ${3:-> ${4:returnType}} {",
+      "    $5",
+      "}"
+    ],
+    "description": "Function declaration"
+  },
+  "If statement": {
+    "prefix": "if",
+    "body": [
+      "if (${1:condition}) {",
+      "    $2",
+      "}"
+    ],
+    "description": "If statement"
+  },
+  "If-else statement": {
+    "prefix": "ifelse",
+    "body": [
+      "if (${1:condition}) {",
+      "    $2",
+      "} else {",
+      "    $3",
+      "}"
+    ],
+    "description": "If-else statement"
+  },
+  "For loop": {
+    "prefix": "for",
+    "body": [
+      "for (${1:i} = ${2:0}; ${1:i} < ${3:count}; ${1:i}++) {",
+      "    $4",
+      "}"
+    ],
+    "description": "For loop"
+  },
+  "While loop": {
+    "prefix": "while",
+    "body": [
+      "while (${1:condition}) {",
+      "    $2",
+      "}"
+    ],
+    "description": "While loop"
+  },
+  "Class declaration": {
+    "prefix": "class",
+    "body": [
+      "class ${1:name} {",
+      "    $2",
+      "}"
+    ],
+    "description": "Class declaration"
+  },
+  "Ask function": {
+    "prefix": "ask",
+    "body": [
+      "ask(\"${1:question}\", \"${2:y/n}\")"
+    ],
+    "description": "Ask user for input"
+  },
+  "Ask function (free input)": {
+    "prefix": "askfree",
+    "body": [
+      "ask(\"${1:question}\", \"free\")"
+    ],
+    "description": "Ask user for free input"
+  }
+} 

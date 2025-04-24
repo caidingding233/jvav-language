@@ -1,0 +1,127 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Jvav",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#keywords" },
+    { "include": "#chineseKeywords" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#functions" },
+    { "include": "#constants" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.jvav",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.jvav",
+          "match": "\\b(if|else|elif|loop|while|for|return|break|continue|try|catch|import|enum|record)\\b"
+        },
+        {
+          "name": "keyword.operator.word.jvav",
+          "match": "\\b(in|of|as|is|not|and|or)\\b"
+        },
+        {
+          "name": "storage.type.jvav",
+          "match": "\\b(set|define)\\b"
+        },
+        {
+          "name": "storage.type.jvav",
+          "match": "\\b(number|string|boolean|array)\\b"
+        }
+      ]
+    },
+    "chineseKeywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.jvav",
+          "match": "\\b(如果|否则|循环|当|遍历|返回|中断|继续|尝试|捕获|导入|枚举|记录)\\b"
+        },
+        {
+          "name": "keyword.operator.word.jvav",
+          "match": "\\b(在|属于|作为|是|不是|且|或)\\b"
+        },
+        {
+          "name": "storage.type.jvav",
+          "match": "\\b(设置|定义)\\b"
+        },
+        {
+          "name": "support.function.jvav",
+          "match": "\\b(输出)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.jvav",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.jvav",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.jvav",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.jvav",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.jvav",
+          "match": "\\b(0x[0-9a-fA-F]+|0b[01]+|0o[0-7]+|[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?)\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "support.function.jvav",
+          "match": "\\b(print)\\b"
+        },
+        {
+          "name": "entity.name.function.jvav",
+          "match": "\\b([a-zA-Z你-龥_][a-zA-Z0-9你-龥_]*)\\s*\\("
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.jvav",
+          "match": "\\b(true|false|null|undefined)\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.jvav",
+          "match": "(==|!=|<=|>=|<|>|\\+|\\-|\\*|\\/|%|\\+=|\\-=|\\*=|\\/=|%=|=|\\.|\\->|\\+\\+|\\-\\-|!|&&|\\|\\|)"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.jvav"
+} 

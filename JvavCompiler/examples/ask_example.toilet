@@ -1,0 +1,36 @@
+// 这是一个使用ask函数的示例
+// 演示如何获取用户输入
+
+// 简单的是/否问题
+var answer = ask("您喜欢编程吗?", "y/n");
+print("您的回答是: " + answer);
+
+if (answer == "y") {
+    print("太好了！我也喜欢编程！");
+} else {
+    print("没关系，每个人有自己的爱好！");
+}
+
+// 获取用户自由输入
+var name = ask("请问您的名字是?", "free");
+print("您好, " + name + "! 很高兴认识您!");
+
+// 创建更复杂的交互
+var age = ask("您的年龄是?", "free");
+var ageNum = parseInt(age);
+
+if (ageNum > 0) {
+    if (ageNum < 18) {
+        print("您还年轻，未来充满可能！");
+    } else if (ageNum < 30) {
+        print("您正值青春年华！");
+    } else if (ageNum < 60) {
+        print("您经验丰富！");
+    } else {
+        print("您的智慧令人敬佩！");
+    }
+} else {
+    print("年龄格式不正确，请输入一个正数。");
+}
+
+print("交互示例结束，感谢使用！"); 

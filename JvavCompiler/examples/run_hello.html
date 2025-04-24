@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jvav Hello World 演示</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        #console {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #3e8e41;
+        }
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .loading {
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .error {
+            color: #ff6b6b;
+        }
+        .success {
+            color: #6bff6b;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Jvav WebAssembly 演示</h1>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="source">Jvav 源代码</div>
+            <div class="tab" data-tab="wasm">WebAssembly 文本格式</div>
+        </div>
+
+        <div id="source-tab" class="tab-content">
+            <h2>源代码 (hello.jvav)</h2>
+            <pre id="source-code">
+set name = "世界";
+set count = 3;
+
+print("你好, " + name + "!");
+
+if (count > 0) {
+    print("开始倒计时:");
+    
+    loop (count) {
+        print(count - i);
+    }
+    
+    print("倒计时结束!");
+} else {
+    print("没有进行倒计时");
+}
+
+define 计算平方(x) {
+    return x * x;
+}
+
+set result = 计算平方(5);
+print("5的平方是: " + result);
+            </pre>
+        </div>
+        
+        <div id="wasm-tab" class="tab-content" style="display: none;">
+            <h2>WebAssembly文本格式 (hello.wat)</h2>
+            <pre id="wasm-code">加载中...</pre>
+        </div>
+        
+        <button id="run-button" class="button">运行程序</button>
+        <span id="loading" class="loading" style="display: none;">正在运行...</span>
+        
+        <h2>输出结果</h2>
+        <div id="console"></div>
+    </div>
+    
+    <script>
+        // 标签页切换功能
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有活动状态
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.style.display = 'none');
+                
+                // 设置当前标签为活动状态
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).style.display = 'block';
+                
+                // 如果点击的是WebAssembly标签，尝试加载WAT内容
+                if (tabId === 'wasm') {
+                    loadWatContent();
+                }
+            });
+        });
+        
+        // 加载WAT内容
+        async function loadWatContent() {
+            const wasmCode = document.getElementById('wasm-code');
+            
+            try {
+                const response = await fetch('hello.wat');
+                if (!response.ok) {
+                    throw new Error('未找到WAT文件');
+                }
+                
+                const watContent = await response.text();
+                wasmCode.textContent = watContent;
+            } catch (error) {
+                wasmCode.textContent = `无法加载WAT文件: ${error.message}`;
+            }
+        }
+        
+        // 字符串处理函数
+        function createString(memory, str) {
+            const encoder = new TextEncoder();
+            const bytes = encoder.encode(str + '\0'); // 添加NULL终止符
+            const ptr = instance.exports.allocate(bytes.length);
+            
+            // 将字符串复制到WebAssembly内存
+            const mem = new Uint8Array(memory.buffer);
+            for (let i = 0; i < bytes.length; i++) {
+                mem[ptr + i] = bytes[i];
+            }
+            
+            return ptr;
+        }
+        
+        function readString(memory, ptr) {
+            const mem = new Uint8Array(memory.buffer);
+            
+            // 查找NULL终止符
+            let end = ptr;
+            while (mem[end] !== 0) {
+                end++;
+            }
+            
+            // 解码字符串
+            const bytes = mem.slice(ptr, end);
+            const decoder = new TextDecoder();
+            return decoder.decode(bytes);
+        }
+        
+        // 自定义控制台输出
+        const consoleOutput = document.getElementById('console');
+        const runButton = document.getElementById('run-button');
+        const loadingIndicator = document.getElementById('loading');
+        
+        // WebAssembly内存和实例
+        let memory;
+        let instance;
+        
+        const customConsole = {
+            log: function(value) {
+                const line = document.createElement('div');
+                line.textContent = value.toString();
+                consoleOutput.appendChild(line);
+                // 自动滚动到底部
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            },
+            log_str: function(ptr) {
+                const text = readString(memory.buffer, ptr);
+                const line = document.createElement('div');
+                line.textContent = text;
+                consoleOutput.appendChild(line);
+                // 自动滚动到底部
+                consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            }
+        };
+        
+        // 点击按钮运行WebAssembly
+        runButton.addEventListener('click', async () => {
+            consoleOutput.innerHTML = ''; // 清空之前的输出
+            runButton.disabled = true;
+            loadingIndicator.style.display = 'inline-block';
+            
+            try {
+                // 获取WebAssembly文件
+                const wasmResponse = await fetch('hello.wasm');
+                if (!wasmResponse.ok) {
+                    throw new Error('未找到WebAssembly文件。请先将WAT文件编译为WASM格式。');
+                }
+                
+                const wasmBytes = await wasmResponse.arrayBuffer();
+                
+                // 创建WebAssembly内存
+                memory = new WebAssembly.Memory({ initial: 1 });
+                
+                // 实例化WebAssembly模块
+                const result = await WebAssembly.instantiate(wasmBytes, {
+                    env: {
+                        memory: memory,
+                        print: (value) => customConsole.log(value),
+                        print_str: (ptr) => customConsole.log_str(ptr),
+                        console_log: (value) => customConsole.log(value),
+                        console_log_str: (ptr) => customConsole.log_str(ptr)
+                    }
+                });
+                
+                // 保存实例以供字符串处理函数使用
+                instance = result.instance;
+                
+                // 运行主函数
+                const main = instance.exports.main;
+                if (main) {
+                    const result = main();
+                    const successLine = document.createElement('div');
+                    successLine.textContent = "程序执行完成" + (result ? `，返回值: ${result}` : "");
+                    successLine.className = "success";
+                    consoleOutput.appendChild(successLine);
+                } else {
+                    throw new Error("找不到main函数");
+                }
+            } catch (error) {
+                const errorLine = document.createElement('div');
+                errorLine.textContent = "错误: " + error.message;
+                errorLine.className = "error";
+                consoleOutput.appendChild(errorLine);
+                
+                const helpLine = document.createElement('div');
+                helpLine.innerHTML = `提示: 您可能需要使用wat2wasm工具将WAT文件编译为WASM格式。<br>
+                命令: <code>wat2wasm hello.wat -o hello.wasm</code><br>
+                或使用我们提供的脚本: <code>node compile_wat.js hello.wat</code>`;
+                consoleOutput.appendChild(helpLine);
+            } finally {
+                runButton.disabled = false;
+                loadingIndicator.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,166 @@
+{
+  "name": "jvav-language-support",
+  "displayName": "Jvav语言支持",
+  "description": "Jvav编程语言支持及开发工具",
+  "version": "0.1.0",
+  "publisher": "jvav-team",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:jvav",
+    "onCommand:jvav.compile",
+    "onCommand:jvav.run",
+    "onCommand:jvav.buildNative",
+    "onCommand:jvav.startRepl"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "jvav",
+        "aliases": [
+          "Jvav",
+          "jvav"
+        ],
+        "extensions": [
+          ".toilet"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "jvav",
+        "scopeName": "source.jvav",
+        "path": "./syntaxes/jvav.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "jvav.compile",
+        "title": "Jvav: 编译当前文件"
+      },
+      {
+        "command": "jvav.run",
+        "title": "Jvav: 运行当前文件"
+      },
+      {
+        "command": "jvav.buildNative",
+        "title": "Jvav: 构建为本地可执行文件"
+      },
+      {
+        "command": "jvav.startRepl",
+        "title": "Jvav: 启动交互式终端"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "jvav.compile",
+        "key": "ctrl+shift+b",
+        "mac": "cmd+shift+b",
+        "when": "editorLangId == jvav"
+      },
+      {
+        "command": "jvav.run",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorLangId == jvav"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "jvav.compile",
+          "when": "editorLangId == jvav",
+          "group": "jvav"
+        },
+        {
+          "command": "jvav.run",
+          "when": "editorLangId == jvav",
+          "group": "jvav"
+        },
+        {
+          "command": "jvav.buildNative",
+          "when": "editorLangId == jvav",
+          "group": "jvav"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "jvav.compile",
+          "when": "resourceExtname == .jvav",
+          "group": "jvav"
+        },
+        {
+          "command": "jvav.run",
+          "when": "resourceExtname == .jvav",
+          "group": "jvav"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Jvav",
+      "properties": {
+        "jvav.compilerPath": {
+          "type": "string",
+          "default": "jvavc",
+          "description": "Jvav编译器路径"
+        },
+        "jvav.terminalPath": {
+          "type": "string",
+          "default": "jvav_terminal",
+          "default": "",
+          "description": "Jvav交互式终端的路径"
+        },
+        "jvav.optimizationLevel": {
+          "type": "number",
+          "default": 1,
+          "enum": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "description": "代码优化级别 (0-3)"
+        },
+        "jvav.targetPlatform": {
+          "type": "string",
+          "default": "wasm",
+          "enum": [
+            "wasm",
+            "executable",
+            "windows",
+            "macos",
+            "linux",
+            "harmony"
+          ],
+          "description": "编译目标平台"
+        }
+      }
+    },
+    "snippets": [
+      {
+        "language": "jvav",
+        "path": "./snippets/jvav.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.60.0",
+    "typescript": "^4.4.4",
+    "vsce": "^2.6.3"
+  }
+} 

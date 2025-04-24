@@ -1,0 +1,58 @@
+# Jvav语言示例程序 - Hello World
+# 这个程序展示了Jvav语言的基本语法和功能
+
+# 使用set语句定义变量
+set name == "世界"
+set count:number == 3
+
+# 使用print语句输出
+print("你好, " + name + "!")
+
+# 使用if语句进行条件判断
+if count > 0 {
+    print("倒计时开始:")
+    
+    # 使用loop语句进行循环
+    loop as i(count) {
+        print(count - i)
+    }
+    
+    print("发射!")
+} else {
+    print("倒计时取消")
+}
+
+# 定义和调用函数
+define 计算平方(x) {
+    return x * x
+}
+
+set result == 计算平方(5)
+print("5的平方是: " + result)
+
+# 使用中文关键字
+设置 消息 == "这是用中文关键字编写的Jvav代码"
+输出(消息)
+
+# 使用try-catch进行错误处理
+try {
+    set x == 10
+    set y == 0
+    set z == x / y  # 这会触发除零错误
+    print(z)
+} catch {
+    print("捕获到错误: 除零操作")
+}
+
+# 使用枚举类型
+enum 颜色 {
+    红色
+    绿色
+    蓝色
+}
+
+set favorite == 颜色.蓝色
+print("我最喜欢的颜色是: " + favorite)
+
+# 程序结束
+print("程序执行完毕!") 
